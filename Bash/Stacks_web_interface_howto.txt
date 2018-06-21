@@ -1,0 +1,27 @@
+## Commands to run to use the stacks web interface
+
+# Step 1. - Create the database
+
+mysql -e "create database DATABASE_NAME" -p  # Subsititue "DATABASE_NAME" for any name you choose. But must use the same name in following commands
+
+## Note, the -p is important. Without it mysql will not ask for a password. Password is fishyzebras.
+
+# Step 2. - Don't know what this does - I guess it tells mysql that the database has to have the parameters and settings in the stacks.sql file.
+
+mysql DATABASE_NAME < /usr/local/share/stacks/sql/stacks.sql 
+
+# Step 3. - load the RADtags into the mysql database that you just created
+
+Load_radtags.pl  -D DATABASE_NAME -b 1 -p ./stacks/ -B -e "DATABASE_DESCRIPTION" -M POPMAP -c # again substitute DATABASE_NAME, POPMAP and DATABASE_DESCRIPTION (can be anything you want) here
+
+# Step 4. - Index the database. If you don't do this, the database will not be usable on the we interface.
+
+index_radtags.pl -D DATABASE_NAME -c 
+
+# Step 5.
+
+#view the database by going into a web browser and typing "localhost/stacks" into the URL bar.
+#Note, the databases are meant to show up there, this didn't work for me, instead, I have to type:
+
+http://localhost/stacks/index.php?db=DATABASE_NAME
+

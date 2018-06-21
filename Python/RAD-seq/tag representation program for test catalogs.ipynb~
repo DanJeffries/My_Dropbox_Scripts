@@ -1,0 +1,261 @@
+{
+ "metadata": {
+  "name": "",
+  "signature": "sha256:cc5096cbfb06abc68346ddfbd1ed89fd544e09c4a9dd1a20642538b51b1b587f"
+ },
+ "nbformat": 3,
+ "nbformat_minor": 0,
+ "worksheets": [
+  {
+   "cells": [
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "import matplotlib\n",
+      "from matplotlib_venn import venn3\n",
+      "from matplotlib import pyplot as plt\n",
+      "import os\n",
+      "import numpy as np"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 22
+    },
+    {
+     "cell_type": "markdown",
+     "metadata": {},
+     "source": [
+      "###The cool natural sorting function"
+     ]
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "import re\n",
+      "def natural_key(string_): \n",
+      "    return [int(s) if s.isdigit() else s for s in re.split(r'(\\d+)', string_)]"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 13
+    },
+    {
+     "cell_type": "markdown",
+     "metadata": {},
+     "source": [
+      "###Creating lists of catalog paths"
+     ]
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "catalog_files = []\n",
+      "for root, dirs, files in os.walk(os.getcwd()):\n",
+      "    for fil in files:\n",
+      "        if 'batch' in fil and 'tags' in fil:\n",
+      "            catalog_files.append(root + '/' + fil)\n",
+      "catalog_files = sorted(catalog_files, key = natural_key)  ## I love this natural key function!"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "/media/dan/34D5D1CE642D7E36/2013076_Hanfling_Bernd/Stacks/Stacks_analyses_v.2/python_increment_tests/cru_gold_hyb_2/IncreMental_C_M_8/n_tests/n_0/batch_0.catalog.tags.tsv\n",
+        "/media/dan/34D5D1CE642D7E36/2013076_Hanfling_Bernd/Stacks/Stacks_analyses_v.2/python_increment_tests/cru_gold_hyb_2/IncreMental_C_M_8/n_tests/n_2/batch_0.catalog.tags.tsv\n",
+        "/media/dan/34D5D1CE642D7E36/2013076_Hanfling_Bernd/Stacks/Stacks_analyses_v.2/python_increment_tests/cru_gold_hyb_2/IncreMental_C_M_8/n_tests/n_4/batch_0.catalog.tags.tsv\n",
+        "/media/dan/34D5D1CE642D7E36/2013076_Hanfling_Bernd/Stacks/Stacks_analyses_v.2/python_increment_tests/cru_gold_hyb_2/IncreMental_C_M_8/n_tests/n_6/batch_0.catalog.tags.tsv\n",
+        "/media/dan/34D5D1CE642D7E36/2013076_Hanfling_Bernd/Stacks/Stacks_analyses_v.2/python_increment_tests/cru_gold_hyb_2/IncreMental_C_M_8/n_tests/n_8/batch_0.catalog.tags.tsv\n",
+        "/media/dan/34D5D1CE642D7E36/2013076_Hanfling_Bernd/Stacks/Stacks_analyses_v.2/python_increment_tests/cru_gold_hyb_2/IncreMental_C_M_8/n_tests/n_10/batch_0.catalog.tags.tsv\n",
+        "/media/dan/34D5D1CE642D7E36/2013076_Hanfling_Bernd/Stacks/Stacks_analyses_v.2/python_increment_tests/cru_gold_hyb_2/IncreMental_C_M_8/n_tests/n_12/batch_0.catalog.tags.tsv\n"
+       ]
+      }
+     ],
+     "prompt_number": 14
+    },
+    {
+     "cell_type": "markdown",
+     "metadata": {},
+     "source": [
+      "### The Venn diagrams"
+     ]
+    },
+    {
+     "cell_type": "markdown",
+     "metadata": {},
+     "source": [
+      "A couple of things to put in manually here:\n",
+      "- The list names and sample names are the most important\n",
+      "- Also make sure the x and y ranges in the scatter plots are the same\n",
+      "- The fonts and subplot arrangements if the number of increment tests done (and so plots) is greater than 8. Although this should be about the max. \n"
+     ]
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "## Adjust global fonts to make figures neater\n",
+      "\n",
+      "font = {'family' : 'sans',\n",
+      "        'weight' : 'bold',\n",
+      "        'size'   : 4}\n",
+      "matplotlib.rc('font', **font)\n",
+      "\n",
+      "## Define lists\n",
+      "GF = []\n",
+      "HOLT = []\n",
+      "MOAT = []\n",
+      "plot_y = []\n",
+      "shared = []\n",
+      "\n",
+      "## Plot number for subplots\n",
+      "plot_number = 1 ## start plot number at 1 (increment in loops)\n",
+      "\n",
+      "##Open Figure\n",
+      "fig = plt.figure()\n",
+      "plt.subplots_adjust(hspace = 0.5) ## Adjust space between plots\n",
+      "\n",
+      "## For each catalog file\n",
+      "for catalog in catalog_files:\n",
+      "    f = open(catalog, 'r') ## Open file\n",
+      "    seqNumber = 1 ## Start seqNumber\n",
+      "    for line in f.readlines():\n",
+      "        locfield = line.strip().split()[7].split(',') ## Isolate and split the relevant column\n",
+      "\n",
+      "    ## Assign the seqNumber to a list depending on which individuals it is present in\n",
+      "        for loc in locfield:\n",
+      "            if loc.startswith('1'): \n",
+      "                GF.append(seqNumber)\n",
+      "            if loc.startswith('2'):\n",
+      "                HOLT.append(seqNumber)\n",
+      "            if loc.startswith('3'):\n",
+      "                MOAT.append(seqNumber)\n",
+      "        seqNumber += 1  ## Increment seq number after every line (tag)\n",
+      "    \n",
+      "    common = set(GF) & set(HOLT) & set(MOAT)\n",
+      "    shared.append(len(list(common)))\n",
+      "    \n",
+      "    \n",
+      "    ## Add the venn diagram as a subplot of the main figure\n",
+      "    \n",
+      "    fig.add_subplot(2,4,plot_number)\n",
+      "    venn3([set(GF), set(HOLT), set(MOAT)], ('GF', 'HOLT', 'MOAT'))\n",
+      "    plt.title(catalog.split('/')[11], fontsize = 20)\n",
+      "    \n",
+      "\n",
+      "    \n",
+      "    plot_y.append(catalog.split('/')[11])\n",
+      "    \n",
+      "    \n",
+      "    print catalog.split('/')[11]+' Catalog done'\n",
+      "    \n",
+      "    ## Reset lists\n",
+      "    GF = []\n",
+      "    HOLT = []\n",
+      "    MOAT = []\n",
+      "    ## Increment plot number\n",
+      "    plot_number += 1\n",
+      "\n",
+      "## save plot\n",
+      "plt.savefig(\"Tag_sharing.pdf\")\n",
+      "\n",
+      "##Close Venn plot   \n",
+      "\n",
+      "plt.close('all')\n",
+      "\n",
+      "## Plot the change in number of tags shared between all individuals\n",
+      "\n",
+      "plt.scatter(range(0,len(shared)-1,1),shared[:-1])\n",
+      "plt.plot(range(0,len(shared)-1,1),shared[:-1]) ## Manually input the same parameter range used in incremental IncreMental here for the x axis labels.\n",
+      "plt.title(\" Change in number of tags shared between all indivs in catalog\", fontsize = 15)\n",
+      "plt.xlabel(plot_y, fontsize = 10)\n",
+      "plt.ylabel(\"Number of tags\", fontsize = 10)\n",
+      "plt.xticks(fontsize = 10)\n",
+      "plt.yticks(fontsize = 10)\n",
+      "\n",
+      "plt.savefig('Change_in_tag_sharing.pdf')\n",
+      "plt.close('all')\n",
+      "\n",
+      "print 'finished'"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "n_0 Catalog done\n",
+        "n_2 Catalog done"
+       ]
+      },
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "\n",
+        "n_4 Catalog done"
+       ]
+      },
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "\n",
+        "n_6 Catalog done"
+       ]
+      },
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "\n",
+        "n_8 Catalog done"
+       ]
+      },
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "\n",
+        "n_10 Catalog done"
+       ]
+      },
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "\n",
+        "n_12 Catalog done"
+       ]
+      },
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "\n",
+        "finished"
+       ]
+      },
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "\n"
+       ]
+      }
+     ],
+     "prompt_number": 91
+    }
+   ],
+   "metadata": {}
+  }
+ ]
+}
