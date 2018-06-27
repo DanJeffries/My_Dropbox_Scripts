@@ -171,7 +171,7 @@ def missing_data_finder(input_file, output_file_path, blacklisted_tags_cutoff=10
             if record.ID not in missing_data_tags:
                 missing_data_tags[record.ID] = 0
             
-            if record.genotype(sample)['GT'] == None: ## If the current samples genotype for this record is missing ('./.'), count it with no_genotype_counter
+            if record.genotype(sample)['GT'] == None or record.genotype(sample)['GT'] == "./.": ## If the current samples genotype for this record is missing ('./.'), count it with no_genotype_counter
                 missing_data_count[sample] += 1
                 missing_data_tags[record.ID] += 1
 
