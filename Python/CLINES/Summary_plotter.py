@@ -6,11 +6,16 @@ matplotlib.use('Agg')
 def Summary_plotter(input_vcf_path, switches = "1111", sort = True):
     
     """
-    Summary plotter plots some standard metrics for a dataset. Plots missing data per sample, coverage per sample and heterozygosity Vs. coverage accross samples and loci. 
+    Summary plotter plots some standard metrics for a SNP dataset in VCF format. Plots missing data per sample, coverage per sample and heterozygosity Vs. coverage accross samples and loci. 
     
-    input_vcf_path = full path to vcf
-    switches = vector of four 0 or 1 switches for the missing data, coverage and heterozygosity plots in that order. Example: "1101".
-    sort = True or False - whether to sort the samples by the plotted metric (True), or keep order in vcf (False)
+      input_vcf_path = full path to vcf
+      switches = vector of four 0 or 1 switches for the missing data, coverage and heterozygosity plots in that order. Example: "1101".
+      sort = True or False - whether to sort the samples by the plotted metric (True), or keep order in vcf (False)
+
+    Example:
+
+      python ./Summary_plotter.py /path/to/my.vcf 1111 False
+
     """
     
     from matplotlib import pyplot as plt
@@ -363,7 +368,10 @@ def Summary_plotter(input_vcf_path, switches = "1111", sort = True):
 
         out_table.close()
 
-        print "Summary stat data saved to %s\n" % out_table_path
+        print "Summary stat data saved to %s" % out_table_path
+
+    print "Summary plot saved to %s\n" % outfile
+
 
 
 

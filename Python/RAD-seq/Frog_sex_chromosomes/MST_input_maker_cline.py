@@ -402,14 +402,14 @@ def MST_input_maker(vcf_path, sex_info_file, offspring_presence_threshold, mende
     ## Make file headers
     N_offspring = 0
     Sample_headers = []        
-   # Sample_headers.append("locus_name")
+    # Sample_headers.append("locus_name")
     for i in offspring:
         if i in sample_names:
-	    if len(Sample_headers) == 0:
-	        N_offspring += 1
+            if len(Sample_headers) == 0:
+                N_offspring += 1
                 Sample_headers.append("%s" % (i))
             elif len(Sample_headers) > 0:
-   	        N_offspring += 1
+                N_offspring += 1
                 Sample_headers.append("\t%s" % (i))
     Sample_header_line = ''.join(Sample_headers)
     

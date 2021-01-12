@@ -52,7 +52,7 @@ def SL_snp_freq(myvcfpath, popmappath, catalog_tags_file, X_or_Z_freq_threshold 
     import gzip
     
     if verbose == True:
-        print "\n##### Using SNP frequency approach #### \n"
+        print("\n##### Using SNP frequency approach #### \n")
     
     ## set the window around the freq threshold. The window automatically tightens and relaxes around 0.5 or -0.5 
 
@@ -143,7 +143,7 @@ def SL_snp_freq(myvcfpath, popmappath, catalog_tags_file, X_or_Z_freq_threshold 
     for record in vcf_reader:
         locus_counter += 1
     if verbose == True:
-	print "Number of loci = %s" % (locus_counter)
+        print("Number of loci = %s" % (locus_counter))
 
     ## Write some general stats and input options to the log file
 
@@ -189,7 +189,7 @@ def SL_snp_freq(myvcfpath, popmappath, catalog_tags_file, X_or_Z_freq_threshold 
         male_genotypes = 0
         fem_genotypes = 0
         number_of_samples = len(record.samples)
-	loc_id = "%s_%s" % (record.ID, record.POS)
+        loc_id = "%s_%s" % (record.ID, record.POS)
 
         for sample in record.samples:
 
@@ -362,14 +362,14 @@ def SL_snp_freq(myvcfpath, popmappath, catalog_tags_file, X_or_Z_freq_threshold 
 
     if verbose == True:
 	## Print some quick summary stats - also written at the end of the log file
-        print "Number of samples =", number_of_samples
-        print "Number of loci with too few samples = %s" % (low_data_loci)
-        print "Number of loci with low MAF = %s" % (low_maf_counter)
-        print "Number of loci with enough data = %s" % (kept_loci)
-        print "Number of putative X linked snps = %s" % (numb_putative_Xlinked)
-        print "Number of putative X linked tags = %s" % (len(set(Putative_Xlinked_makers)))
-        print "Number of putative Z linked markers = %s" % (numb_putative_Zlinked)
-        print "Number of putative Z linked tags = %s" % (len(set(Putative_Zlinked_makers)))
+        print("Number of samples =", number_of_samples)
+        print("Number of loci with too few samples = %s" % (low_data_loci))
+        print("Number of loci with low MAF = %s" % (low_maf_counter))
+        print("Number of loci with enough data = %s" % (kept_loci))
+        print("Number of putative X linked snps = %s" % (numb_putative_Xlinked))
+        print("Number of putative X linked tags = %s" % (len(set(Putative_Xlinked_makers))))
+        print("Number of putative Z linked markers = %s" % (numb_putative_Zlinked))
+        print("Number of putative Z linked tags = %s" % (len(set(Putative_Zlinked_makers))))
 
     freq_ratios_log.append("\nSUMMARY....\n\n")
     freq_ratios_log.append("Number of loci with too few samples = %s\n" % (low_data_loci))
@@ -397,7 +397,7 @@ def SL_snp_freq(myvcfpath, popmappath, catalog_tags_file, X_or_Z_freq_threshold 
     all_frequencies.close()
     
     if verbose == True:
-        print "\n***DONE!***\n"
+        print("\n***DONE!***\n")
 
 
     return set(Putative_Xlinked_makers), set(Putative_Zlinked_makers), freq_ratios_log
@@ -455,7 +455,7 @@ def SL_snp_het(myvcfpath, popmappath, catalog_tags_file, homogamtic_homozygosity
     
     
     if verbose == True:
-        print "\n##### Using SNP heterozygosity approach #####\n "
+        print("\n##### Using SNP heterozygosity approach #####\n ")
 
     # First thing to do is alter the metadata in the vcf outputted by stacks 1.30. I am not sure if it is stacks or pyvcf that is wrong, but stacks encodes the data in the allele depth field as an interger, while pyvcf expects a float. Changing the metadata line in the vcf header to contain "Number=." instead of "Number=1" fixes the issue.  
     
@@ -523,7 +523,7 @@ def SL_snp_het(myvcfpath, popmappath, catalog_tags_file, homogamtic_homozygosity
     for record in vcf_reader:
         locus_counter += 1
     if verbose == True:
-	print "Number of loci = %s" % (locus_counter)
+        print("Number of loci = %s" % (locus_counter))
 
     ## Write some general stats and input options to the log file
 
@@ -563,7 +563,7 @@ def SL_snp_het(myvcfpath, popmappath, catalog_tags_file, homogamtic_homozygosity
         number_of_samples = len(record.samples) ## Number of samples (not genotypes)
         samples_present = record.num_called ## Number of samples called
         percent_samples_present = samples_present/number_of_samples ## percentage of samples genotyped at this locus
-	low_cov_samples = 0        
+        low_cov_samples = 0        
 
         if percent_samples_present >= sample_presence_cutoff:
                 
@@ -608,62 +608,60 @@ def SL_snp_het(myvcfpath, popmappath, catalog_tags_file, homogamtic_homozygosity
                                 elif not sample.is_het:
                                     hom_males_count += 1
                     
-		
-		
-		if all([male_genotypes > 0, fem_genotypes > 0]):
+            if all([male_genotypes > 0, fem_genotypes > 0]):
 
 
-	                ## Calculate frequencies per sex (these frequencies are based on the number of males or females called at each number, so accounts for missing data)
+                ## Calculate frequencies per sex (these frequencies are based on the number of males or females called at each number, so accounts for missing data)
 
-	                male_homozygosity = hom_males_count/male_genotypes
-	                male_heterozygosity = het_males_count/male_genotypes
+                male_homozygosity = hom_males_count/male_genotypes
+                male_heterozygosity = het_males_count/male_genotypes
 
-	                female_homozygosity = hom_females_count/fem_genotypes
-	                female_heterozygosity = het_females_count/fem_genotypes
-
-
-	                ## Output female stats
-	                het_approach_log.append("\n#LOCUS_ID: %s\n\n" %(loc_id))   
-	                het_approach_log.append("Number of female genotypes for this locus = %s\n" %(fem_genotypes))
-	                het_approach_log.append("Female homozygosity = %.3f\n" % (female_homozygosity))
-	                het_approach_log.append("Female heterozygosity = %.3f\n" % (female_heterozygosity))
-
-	                ## Output male stats
-	                het_approach_log.append("Number of male genotypes for this locus = %s\n" %(male_genotypes))
-	                het_approach_log.append("Male homozygosity = %.3f\n" % (male_homozygosity))
-	                het_approach_log.append("Male heterozygosity = %.3f\n" % (male_heterozygosity))
+                female_homozygosity = hom_females_count/fem_genotypes
+                female_heterozygosity = het_females_count/fem_genotypes
 
 
-	                ## Find and write files for X or Z linked loci  
+                ## Output female stats
+                het_approach_log.append("\n#LOCUS_ID: %s\n\n" %(loc_id))   
+                het_approach_log.append("Number of female genotypes for this locus = %s\n" %(fem_genotypes))
+                het_approach_log.append("Female homozygosity = %.3f\n" % (female_homozygosity))
+                het_approach_log.append("Female heterozygosity = %.3f\n" % (female_heterozygosity))
 
-			N_genotypes_at_locus = male_genotypes + fem_genotypes
- 
-			if N_genotypes_at_locus/number_of_samples >= sample_presence_cutoff: ### Need to do a second check for enough samples at this locus after the filters!
-				kept_loci += 1 ## This locus can be used!
-	
-		                if all([female_homozygosity >= homogamtic_homozygosity_threshold, male_heterozygosity >= heterogametic_heterozygosity_threshold]):
-		                    linked_status = "Xlinked"
-		                    het_approach_log.append("Locus %s DOES FIT X linked criteria <------------------------\n" % (loc_id))
-		                    Putative_Xlinked_makers.append("%s" % (loc_id))
-		                    numb_putative_Xlinked += 1
-		
-		                elif all([male_homozygosity >= homogamtic_homozygosity_threshold, female_heterozygosity >= heterogametic_heterozygosity_threshold]):  ## for Z linked
-		                    linked_status = "Zlinked"
-		                    het_approach_log.append("Locus %s DOES FIT Z linked criteria <------------------------\n" % (loc_id))
-		                    Putative_Zlinked_makers.append("%s" % (loc_id))
-		                    numb_putative_Zlinked += 1
-		                else:
-		                    het_approach_log.append("Locus %s does not fit X or Z linked criteria\n" % (loc_id))
-		                    linked_status ="NotSexLinked"
+                ## Output male stats
+                het_approach_log.append("Number of male genotypes for this locus = %s\n" %(male_genotypes))
+                het_approach_log.append("Male homozygosity = %.3f\n" % (male_homozygosity))
+                het_approach_log.append("Male heterozygosity = %.3f\n" % (male_heterozygosity))
 
-			else:
-				low_data_loci += 1
-				het_approach_log.append("\n#LOCUS_ID: %s, Locus_POS: %s\n\n" %(record.ID, record.POS))
-	                        het_approach_log.append("Too many sample genotypes filtered from locus, locus discarded\n")
-				het_approach_log.append("%s genotypes / %s samples in total = %s, miniumum threshold = %s\n" % (N_genotypes_at_locus, number_of_samples, N_genotypes_at_locus/number_of_samples, sample_presence_cutoff))
-        	else:
-			het_approach_log.append("\n#LOCUS_ID: %s, Locus_POS: %s\n\n" %(record.ID, record.POS))
-			het_approach_log.append("Locus is missing from one sex: Males = %s, Females = %s" %(male_genotypes, fem_genotypes))
+
+                ## Find and write files for X or Z linked loci  
+    
+                N_genotypes_at_locus = male_genotypes + fem_genotypes
+     
+                if N_genotypes_at_locus/number_of_samples >= sample_presence_cutoff: ### Need to do a second check for enough samples at this locus after the filters!
+                    kept_loci += 1 ## This locus can be used!
+    
+                    if all([female_homozygosity >= homogamtic_homozygosity_threshold, male_heterozygosity >= heterogametic_heterozygosity_threshold]):
+                        linked_status = "Xlinked"
+                        het_approach_log.append("Locus %s DOES FIT X linked criteria <------------------------\n" % (loc_id))
+                        Putative_Xlinked_makers.append("%s" % (loc_id))
+                        numb_putative_Xlinked += 1
+            
+                    elif all([male_homozygosity >= homogamtic_homozygosity_threshold, female_heterozygosity >= heterogametic_heterozygosity_threshold]):  ## for Z linked
+                        linked_status = "Zlinked"
+                        het_approach_log.append("Locus %s DOES FIT Z linked criteria <------------------------\n" % (loc_id))
+                        Putative_Zlinked_makers.append("%s" % (loc_id))
+                        numb_putative_Zlinked += 1
+                    else:
+                        het_approach_log.append("Locus %s does not fit X or Z linked criteria\n" % (loc_id))
+                        linked_status ="NotSexLinked"
+    
+                else:
+                    low_data_loci += 1
+                    het_approach_log.append("\n#LOCUS_ID: %s, Locus_POS: %s\n\n" %(record.ID, record.POS))
+                    het_approach_log.append("Too many sample genotypes filtered from locus, locus discarded\n")
+                    het_approach_log.append("%s genotypes / %s samples in total = %s, miniumum threshold = %s\n" % (N_genotypes_at_locus, number_of_samples, N_genotypes_at_locus/number_of_samples, sample_presence_cutoff))
+            else:
+                het_approach_log.append("\n#LOCUS_ID: %s, Locus_POS: %s\n\n" %(record.ID, record.POS))
+                het_approach_log.append("Locus is missing from one sex: Males = %s, Females = %s" %(male_genotypes, fem_genotypes))
 
         elif percent_samples_present < sample_presence_cutoff:  ## If not enough samples at a locus then log it but don't use for female-male calculations
             het_approach_log.append("\n#LOCUS_ID: %s, Locus_POS: %s\n\n" %(record.ID, record.POS)) 
@@ -672,14 +670,14 @@ def SL_snp_het(myvcfpath, popmappath, catalog_tags_file, homogamtic_homozygosity
 
     if verbose == True:
         ## Print some quick summary stats - also written at the end of the log file
-        print "Number of samples =", number_of_samples
-        print "Number of loci with too few samples = %s" % (low_data_loci)
-        print "Number of loci with low MAF = %s" % (low_maf_counter)
-        print "Number of loci with enough data = %s" % (kept_loci)
-        print "Number of putative X linked snps = %s" % (numb_putative_Xlinked)
-        print "Number of putative X linked tags = %s" % (len(set(Putative_Xlinked_makers)))
-        print "Number of putative Z linked markers = %s" % (numb_putative_Zlinked)
-        print "Number of putative Z linked tags = %s" % (len(set(Putative_Zlinked_makers)))
+        print("Number of samples =", number_of_samples)
+        print("Number of loci with too few samples = %s" % (low_data_loci))
+        print("Number of loci with low MAF = %s" % (low_maf_counter))
+        print("Number of loci with enough data = %s" % (kept_loci))
+        print("Number of putative X linked snps = %s" % (numb_putative_Xlinked))
+        print("Number of putative X linked tags = %s" % (len(set(Putative_Xlinked_makers))))
+        print("Number of putative Z linked markers = %s" % (numb_putative_Zlinked))
+        print("Number of putative Z linked tags = %s" % (len(set(Putative_Zlinked_makers))))
 
     het_approach_log.append("\nSUMMARY....\n\n")
     het_approach_log.append("Number of loci with too few samples = %s\n" % (low_data_loci))
@@ -691,7 +689,7 @@ def SL_snp_het(myvcfpath, popmappath, catalog_tags_file, homogamtic_homozygosity
     het_approach_log.append("Number of putative Z linked tags = %s\n" % (len(set(Putative_Zlinked_makers))))
 
     if verbose == True:
-        print "\n ### DONE! ### \n"
+        print("\n ### DONE! ### \n")
    
  
     return set(Putative_Xlinked_makers), set(Putative_Zlinked_makers), het_approach_log
@@ -708,7 +706,7 @@ def SL_tag_finder(catalog_tags_file, popmappath, sex_presence_thresh = 0.5, verb
     ## a column for the ID of each sample . . . 
     
     if verbose == True:
-        print "\n##### Using Sex specific tag approach ##### \n"
+        print("\n##### Using Sex specific tag approach ##### \n")
     
     ## open log file and write params
     log = []
@@ -832,11 +830,11 @@ def SL_tag_finder(catalog_tags_file, popmappath, sex_presence_thresh = 0.5, verb
     if verbose == True:    
 	## Print summary to STDOUT
 
-        print "\nSUMMARY:\nNumber of males: %s" % (female_count)
-        print "Number of males: %s" % (male_count)
-        print "Number of Putative Y linked tags: %s" % (len(putative_Ylinked_tags))
-        print "Number of Putative W linked tags: %s" % (len(putative_Wlinked_tags))
-        print "\n ### DONE! ###\n"
+        print("\nSUMMARY:\nNumber of males: %s" % (female_count))
+        print("Number of males: %s" % (male_count))
+        print("Number of Putative Y linked tags: %s" % (len(putative_Ylinked_tags)))
+        print("Number of Putative W linked tags: %s" % (len(putative_Wlinked_tags)))
+        print("\n ### DONE! ###\n")
     
     
     ## return list of sex linked tags
@@ -888,6 +886,7 @@ def Super_SLM_finder(Parameter_dict, execute_seq = "111", write_files = True, ve
     # Using only samples specified in the Pop_map file:
     1. Finds tags which are present in <sex_presence_threshold> males and no females (Y linked)
     2. Find tags which are present in <sex_presence_threshold> females and no males (W linked)
+## Define a program to help parallelise the analyses
     3. Outputs all putative X or W linked tags to a fasta file
     
     ====================================================================================================================================================
@@ -985,9 +984,9 @@ def Super_SLM_finder(Parameter_dict, execute_seq = "111", write_files = True, ve
         XYset = Xlinked_freq.union(Xlinked_het,Ylinked_tags)
         ZWset = Zlinked_freq.union(Zlinked_het,Wlinked_tags)
 
-	if plot == True:
+    if plot == True:
             ## For XY tags
-	    fig = plt.figure(figsize= (15,15))
+            fig = plt.figure(figsize= (15,15))
             fig.add_subplot(1,2,1)
             a = venn3([Xlinked_freq,Xlinked_het, Ylinked_tags], ["Xlinked_freq","Xlinked_het", "Ylinked_tags"])
             plt.title("XY tags identified")
@@ -1013,14 +1012,13 @@ def Super_SLM_finder(Parameter_dict, execute_seq = "111", write_files = True, ve
             ## For ZW tags
             fig.add_subplot(1,2,2)
             venn3([Zlinked_freq, Wlinked_tags], ["Zlinked_freq", "Wlinked_tags"])
-	    plt.title("ZW tags identified")
+            plt.title("ZW tags identified")
 
     elif execute_seq == "011":
+        XYset = Xlinked_het.union(Ylinked_tags)
+        ZWset = Zlinked_het.union(Wlinked_tags)
 
-	XYset = Xlinked_het.union(Ylinked_tags)
-	ZWset = Zlinked_het.union(Wlinked_tags)
-
-	if plot == True:
+        if plot == True:
             ## For XY tags
             fig = plt.figure(figsize= (15,15))
             fig.add_subplot(1,2,1)
@@ -1033,11 +1031,10 @@ def Super_SLM_finder(Parameter_dict, execute_seq = "111", write_files = True, ve
             plt.title("ZW tags identified")
 
     elif execute_seq == "110":
-	
-	XYset = Xlinked_freq.union(Xlinked_het)
-	ZWset = Zlinked_freq.union(Zlinked_het)
-	
-	if plot == True:
+        XYset = Xlinked_freq.union(Xlinked_het)
+        ZWset = Zlinked_freq.union(Zlinked_het)
+        
+        if plot == True:
             ## For XY tags
             fig = plt.figure(figsize= (15,15))
             fig.add_subplot(1,2,1)
@@ -1165,16 +1162,15 @@ def Super_SLM_finder(Parameter_dict, execute_seq = "111", write_files = True, ve
 	    master_log.write("Sex linked tags outputted to fastas 'Putative_XYlinked_makers.fa' and Putative_ZWlinked_makers.fa in the directory %s" % outdir)
 	    master_log.close()
 
-       	    if verbose == True:
-    	        print "Sex linked tags outputted to fastas 'Putative_XYlinked_makers.fa' and Putative_ZWlinked_makers.fa"
-	        print "in the directory %s" % outdir
+    if verbose == True:
+        print("Sex linked tags outputted to fastas 'Putative_XYlinked_makers.fa' and Putative_ZWlinked_makers.fa")
+        print("in the directory %s" % outdir)
 
     ## output summary
     if verbose == True:
-    	print "\n ## After merging tags accross methods ## \n"
-    
-    print "Final number of XY tags = %s" % len(XYset)
-    print "Final number of ZW tags = %s" % len(ZWset)
+        print("\n ## After merging tags accross methods ## \n")
+        print("Final number of XY tags = %s" % len(XYset))
+        print("Final number of ZW tags = %s" % len(ZWset))
                                                        
     ## Make a more detailed dictionary for outputting
 

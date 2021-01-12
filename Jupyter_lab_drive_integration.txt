@@ -1,0 +1,9 @@
+Jupyter lab drive integration
+
+Client ID
+
+174351818239-4nkkal0f7a5qvnpaj9g7k9631jda8olm.apps.googleusercontent.com
+
+Client Secret
+
+HzgqwC_jkOtNM4OyJ-TTqHiN
